@@ -1,33 +1,34 @@
-name: KenkePhene Hardening Pipeline
+name: KenkePhene Privacy Pipeline
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-hardening:
+  build-privacy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Hardening & Module Setup
+      - name: Setup Advanced Permissions & Sandbox
         run: |
-          echo "Bắt đầu thiết lập các module bảo mật cốt lõi cho KenkePhene..."
-          mkdir -p kenkephene_build/security_configs
+          echo "Thiết lập cấu hình Hộp cát cho Google Play và Quyền riêng tư..."
+          mkdir -p kenkephene_build/privacy_configs
           
-          # Tạo cấu hình giả lập bảo mật bộ nhớ và phân vùng nội bộ trước để đảm bảo không bị lỗi mạng
-          echo "hardened_malloc=true" > kenkephene_build/security_configs/hardened_malloc.config
-          echo "sepolicy_strict=enforcing" >> kenkephene_build/security_configs/hardened_malloc.config
+          # Cấu hình tường lửa ứng dụng và giới hạn truy cập bộ nhớ
+          echo "network_permission_control=true" > kenkephene_build/privacy_configs/firewall.conf
+          echo "storage_scopes_enabled=true" >> kenkephene_build/privacy_configs/firewall.conf
+          echo "sandboxed_google_play=true" >> kenkephene_build/privacy_configs/firewall.conf
           
-          echo "Đã thiết lập xong các thông số mã hóa và bảo mật!"
+          echo "Đã thiết lập xong các module kiểm soát quyền!"
           
-      - name: Generate Security Artifacts
+      - name: Generate Privacy Artifacts
         run: |
-          echo "Đóng gói các cấu hình bảo mật..."
-          tar -cvf security_modules.tar kenkephene_build/
+          echo "Đóng gói các module quyền riêng tư..."
+          tar -cvf privacy_modules.tar kenkephene_build/
           
-      - name: Upload Artifacts
+      - name: Upload Privacy Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: KenkePhene-Security-Modules
-          path: security_modules.tar
+          name: KenkePhene-Privacy-Modules
+          path: privacy_modules.tar
