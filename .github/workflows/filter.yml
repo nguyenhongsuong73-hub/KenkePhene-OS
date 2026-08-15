@@ -1,0 +1,22 @@
+name: KenkePhene Source Filter
+
+on:
+  workflow_dispatch:
+
+jobs:
+  filter-aosp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Clone Selected Core Components Only
+        run: |
+          echo "Bắt đầu tải các thành phần cốt lõi cho KenkePhene..."
+          git clone --depth=1 https://github.com/aosp-mirror/platform_system_core.git core
+          git clone --depth=1 https://github.com/aosp-mirror/platform_frameworks_base.git frameworks_base
+          
+      - name: Summary Result
+        run: |
+          echo "Đã hoàn tất tải và sàng lọc cơ bản!"
+          ls -la
