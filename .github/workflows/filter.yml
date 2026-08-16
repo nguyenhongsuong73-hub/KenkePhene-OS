@@ -1,4 +1,4 @@
-- name: Run Android Emulator & Test
+- name: KenkePhene Emulator Test Pipeline
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
