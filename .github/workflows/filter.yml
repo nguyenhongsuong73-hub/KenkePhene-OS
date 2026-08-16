@@ -1,6 +1,11 @@
-- name: Rename Gallery App Label
-        run: |
-          echo "Đang đổi tên hiển thị Aves Libre thành Gallery..."
-          # Đảm bảo lệnh này trỏ đúng vào thư mục chứa source app hoặc file tài nguyên của Aves
-          # Sếp thay đường dẫn thực tế của app nếu cần nhé
-          find . -name "strings.xml" -exec sed -i 's/Aves Libre/Gallery/g' {} +
+name: KenkePhene Privacy Pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-privacy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
