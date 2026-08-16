@@ -1,4 +1,22 @@
-- name: KenkePhene Emulator Test Pipeline
+name: KenkePhene Emulator Test Pipeline
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-virtual-device:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Run Android Emulator & Test
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
