@@ -1,31 +1,16 @@
-name: KenkePhene Emulator Test Pipeline
-
-on:
-  workflow_dispatch:
-
-jobs:
-  test-virtual-device:
-    runs-on: macos-latest  # macOS hỗ trợ hardware acceleration tốt nhất để chạy emulator trực tiếp
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Run Android Emulator & Test
+- name: Run Android Emulator & Test
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30
-          target: google_apis
+          api-level: 29
+          target: default
           arch: x86_64
-          profile: pixel_4
+          profile: pixel
+          disk-size: 3000M
+          heap-size: 512M
+          disable-animations: true
+          force-avd-creation: false
           script: |
-            echo "Đang khởi chạy máy ảo test KenkePhene..."
-            # Kiểm tra xem các thiết lập bảo mật và app Gallery đã sẵn sàng chưa
-            echo "Kiểm tra tường lửa và ứng dụng Gallery..."
-            adb shell pm list packages
-            echo "Máy ảo test đã sẵn sàng và hoạt động mượt mà!"
+            echo "Đang kiểm tra trạng thái máy ảo..."
+            adb wait-for-device
+            adb shell getprop sys.boot_completed
+            echo "Máy ảo đã khởi động thành công!"
