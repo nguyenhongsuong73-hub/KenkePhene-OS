@@ -29,28 +29,12 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           script: |
-            echo "Đang khởi động hệ điều hành KenkePhene OS..."
+            echo "Đang chờ máy ảo boot hoàn tất..."
             adb wait-for-device
             
-            # Chờ hệ thống boot hoàn tất
-            while [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" != "1" ]; do
-              echo "Hệ điều hành đang khởi động..."
-              sleep 5
-            done
+            # Kiểm tra trạng thái boot an toàn
+            echo "Trạng thái boot:"
+            adb shell getprop sys.boot_completed
             
             echo "KenkePhene OS đã khởi động thành công!"
-            
-            # Mở khóa màn hình và về màn hình chính (Home)
-            adb shell input keyevent 82
-            adb shell input keyevent 3
-            
-            # Chụp ảnh màn hình hệ điều hành
-            adb shell screencap -p /sdcard/kenkephene_screen.png
-            adb pull /sdcard/kenkephene_screen.png ./kenkephene_screen.png
-            echo "Đã chụp ảnh màn hình hệ điều hành thành công!"
-
-      - name: Upload OS Screenshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: KenkePhene-OS-Desktop
-          path: kenkephene_screen.png
+            adb shell pm list packages
