@@ -29,12 +29,23 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           script: |
-            echo "Đang chờ máy ảo boot hoàn tất..."
+            echo "Đang khởi động hệ điều hành KenkePhene OS..."
             adb wait-for-device
             
-            # Kiểm tra trạng thái boot an toàn
-            echo "Trạng thái boot:"
-            adb shell getprop sys.boot_completed
+            # Chờ hệ thống boot hoàn tất 100%
+            while [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" != "1" ]; do
+              echo "Hệ điều hành đang khởi động..."
+              sleep 5
+            done
             
             echo "KenkePhene OS đã khởi động thành công!"
-            adb shell pm list packages
+            
+            # Bật sáng màn hình, mở khóa và vào màn hình chính (Home)
+            adb shell input keyevent 26
+            adb shell input keyevent 82
+            adb shell input keyevent 3
+            
+            echo "Đã đưa hệ điều hành về màn hình chính thành công!"
+            
+            # Kiểm tra danh sách tiến trình hệ thống đang chạy
+            adb shell ps -A
