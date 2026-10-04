@@ -1,4 +1,4 @@
-name: KenkePhene Emulator Test Pipeline
+name: KenkePhene Emulator Web GUI
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Run Android Emulator & Start OS
+      - name: Run Android Emulator (Stable Headless + Auto GUI Export)
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
@@ -29,23 +29,26 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -no-audio -no-boot-anim
           script: |
-            echo "Đang khởi động hệ điều hành KenkePhene OS..."
+            echo "Đang khởi động KenkePhene OS..."
             adb wait-for-device
             
-            # Chờ hệ thống boot hoàn tất 100%
+            # Chờ boot xong
             while [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" != "1" ]; do
-              echo "Hệ điều hành đang khởi động..."
               sleep 5
             done
+            echo "KenkePhene OS đã sẵn sàng!"
             
-            echo "KenkePhene OS đã khởi động thành công!"
-            
-            # Bật sáng màn hình, mở khóa và vào màn hình chính (Home)
-            adb shell input keyevent 26
+            # Mở khóa và chụp lại màn hình giao diện thực tế của hệ điều hành
             adb shell input keyevent 82
             adb shell input keyevent 3
+            sleep 2
             
-            echo "Đã đưa hệ điều hành về màn hình chính thành công!"
-            
-            # Kiểm tra danh sách tiến trình hệ thống đang chạy
-            adb shell ps -A
+            adb shell screencap -p /sdcard/gui_screen.png
+            adb pull /sdcard/gui_screen.png ./kenkephene_desktop.png
+            echo "Đã chụp thành công giao diện đồ họa!"
+
+      - name: Upload GUI Screenshot Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KenkePhene-OS-GUI-View
+          path: kenkephene_desktop.png
